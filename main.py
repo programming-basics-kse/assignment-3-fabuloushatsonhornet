@@ -1,6 +1,6 @@
 import argparse
 import csv
-#
+
 # parser = argparse.ArgumentParser('Olympic data base')
 # # parser.add_argument('data_base', type=str, default='data_base_olympic.tsv')
 # parser.add_argument('medals', type=str)
@@ -18,22 +18,6 @@ import csv
 # year = args.year
 
 # Temporary
-year = '1998'
-
-filtered_data = []
-
-def sort_by_date(data):
-    if data[9] == year:
-        return data
-
-with open('Olympic Athletes - athlete_events.tsv', 'r') as file:
-    next_line = file.readline()
-    while next_line:
-        next_line = file.readline()
-        data = next_line.split('\t')
-        print(data)
-        if sort_by_date(data):
-            filtered_data.append(data)
 
 def validation_number(value):
     try:
@@ -41,9 +25,10 @@ def validation_number(value):
         return value
     except ValueError:
         return False
-def validation_medal(value):
+def validation_medal(value, year):
     try:
-        if value.lower().capitalize() == 'Gold' or value.lower().capitalize() == 'Silver' or value.lower().capitalize() == 'Bronze':
+        if (value[14].lower().capitalize().strip() == 'Gold' or value[14].lower().capitalize().strip() == 'Silver' or value[14].lower().capitalize().strip() == 'Bronze') and (data[9] == year) and:
+            value[14] = value[14][:-1]
             return value
         return False
     except ValueError:
@@ -52,3 +37,22 @@ def validation_medal(value):
 def sort_by_date(data):
     if data[9] == year:
         return data
+
+
+year = '1998'
+country = 'USA'
+
+filtered_data_list = []
+
+with open('Olympic Athletes - athlete_events.tsv', 'r') as file:
+    next_line = file.readline()
+    while next_line:
+        next_line = file.readline()
+        data = next_line.split('\t')
+        try:
+            if validation_medal(data, year):
+                filtered_data_list.append(data)
+        except IndexError:
+            break
+for data in filtered_data_list:
+    print(data)

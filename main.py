@@ -27,7 +27,7 @@ def validation_number(value):
         return False
 def validation_medal(value, year):
     try:
-        if (value[14].lower().capitalize().strip() == 'Gold' or value[14].lower().capitalize().strip() == 'Silver' or value[14].lower().capitalize().strip() == 'Bronze') and (data[9] == year) and:
+        if (value[14].lower().capitalize().strip() == 'Gold' or value[14].lower().capitalize().strip() == 'Silver' or value[14].lower().capitalize().strip() == 'Bronze') and (data[9] == year):
             value[14] = value[14][:-1]
             return value
         return False
@@ -37,7 +37,6 @@ def validation_medal(value, year):
 def sort_by_date(data):
     if data[9] == year:
         return data
-
 
 year = '1998'
 country = 'USA'
@@ -54,5 +53,19 @@ with open('Olympic Athletes - athlete_events.tsv', 'r') as file:
                 filtered_data_list.append(data)
         except IndexError:
             break
+
+
+with open('Olympic Athletes - athlete_events.tsv', 'r') as file:
+    next_line = file.readline()
+    while next_line:
+        next_line = file.readline()
+        data = next_line.split('\t')
+        try:
+            if validation_medal(data, year):
+                filtered_data_list.append(data)
+        except IndexError:
+            break
+
+
 for data in filtered_data_list:
     print(data)

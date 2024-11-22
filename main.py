@@ -10,9 +10,3 @@ parser.add_argument('-overall', type=str)
 parser.add_argument('-interactive', type=bool, default=False)
 args = parser.parse_args()
 
-with open('data_base_olympic.tsv', 'r') as file:
-    rows = []
-    csv_reader = csv.reader(file, delimiter=',')
-    header = next(csv_reader)
-    for row in csv_reader:
-        rows.append(row)

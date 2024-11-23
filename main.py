@@ -7,15 +7,20 @@ parser.add_argument('-medals', type=str)
 parser.add_argument('country', type=str)
 parser.add_argument('year', type=str)
 # # parser.add_argument('-output', type=str, default='')
-# # parser.add_argument('-total', type=int)
+parser.add_argument('--total', type=int, default=False)
 # # parser.add_argument('-overall', type=str)
 # # parser.add_argument('-interactive', type=bool, default=False)
 args = parser.parse_args()
 #
 #
+data_base = args.data_base
 country = args.country
-year = args.year
-
+if not args.total:
+    year = args.total
+    total = True
+else:
+    year = args.year
+    total = False
 # Temporary
 
 def validation_number(value):
@@ -26,13 +31,19 @@ def validation_number(value):
         return False
 
 def get_medal_and_country(value, year):
-    try:
-        if (value[14].lower().capitalize().strip() == 'Gold' or value[14].lower().capitalize().strip() == 'Silver' or value[14].lower().capitalize().strip() == 'Bronze') and (value[9] == year) and ((value[6].lower() == country.lower()) or (value[7].lower() == country.lower())):
-            value[14] = value[14][:-1]
-            return value
-        return False
-    except ValueError:
-        return False
+        try:
+            if total is False:
+                if (value[14].lower().capitalize().strip() == 'Gold' or value[14].lower().capitalize().strip() == 'Silver' or value[14].lower().capitalize().strip() == 'Bronze') and (value[9] == year) and ((value[6].lower() == country.lower()) or (value[7].lower() == country.lower())):
+                    value[14] = value[14][:-1]
+                    return value
+            if total is True:
+                if (value[14].lower().capitalize().strip() == 'Gold' or value[14].lower().capitalize().strip() == 'Silver' or value[14].lower().capitalize().strip() == 'Bronze') and (value[9] == year):
+                    value[14] = value[14][:-1]
+                    return value
+            return False
+        except ValueError:
+            return False
+
 
 
 def condition_checker(value):
@@ -45,6 +56,7 @@ def condition_checker(value):
 
 
 def get_list(filename, year):
+    filtered_data_list = []
     with open(f"{filename}", 'r') as file:
         next_line = file.readline()
         while next_line:
@@ -55,6 +67,7 @@ def get_list(filename, year):
                     filtered_data_list.append([data[0], data[1], data[6], data[7], data[8], data[9], data[13], data[14]])
             except IndexError:
                 break
+    return filtered_data_list
 
 def print_result(data_list, country, year):
     if not condition_checker(data_list):
@@ -69,10 +82,7 @@ def print_result(data_list, country, year):
     else:
         print(condition_checker(data_list))
 
-
-filtered_data_list = []
-get_list('Olympic Athletes - athlete_events.tsv', year)
-
-filtered_data_list = sorted(filtered_data_list, key=lambda x: int(x[0]), reverse=False)
-
-print_result(filtered_data_list, country, year)
+def main():
+    filtered_data_list = sorted(get_list(f"{data_base}", year), key=lambda x: int(x[0]), reverse=False)
+    print_result(filtered_data_list, country, year)
+main()

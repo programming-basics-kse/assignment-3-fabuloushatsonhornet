@@ -66,6 +66,8 @@ commads = {
     'overall': output_console(tuple(args.overall))
 }
 
+# Як створити посилання на виконання функції в словник, щоб вона виконувалася тільки при звертанні за цим ключем
+
 for arg in args.__dict__:
     if arg in commads:
         commads[arg]

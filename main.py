@@ -2,6 +2,7 @@ import argparse
 import csv
 import pycountry
 from pycountry import countries
+from pyparsing import empty
 
 parser = argparse.ArgumentParser('Olympic data base')
 # parser.add_argument('input file', default='main.py')
@@ -15,20 +16,20 @@ args = parser.parse_args()
 
 
 def output_console(arg_country):
-    counter = 0
     for country in arg_country:
-        country_code = Overall.get_country_code(country)
-        if country_code == None:
+        country_o = Overall(country)
+        if -1 == country_o.code:
             continue
-        print(f"{country_code} - {Overall.overall(country_code)[0][0]} : {Overall.overall(country_code)[0][1]} medals")
-        counter += 1
-
-    if counter == 0:
-        print("No information available...")
-
+        print(f"{country_o.code} - {country_o.top_y} : {country_o.top_m} medals")
 
 class Overall:
-    def get_country_code(country_n):
+    def __init__(self, country):
+        self.code = self.get_country_code(country)
+        if -1 != self.overall():
+            self.top_y = self.overall()[0][0]
+            self.top_m = self.overall()[0][1]
+
+    def get_country_code(self, country_n):
         for country in pycountry.countries:
             if country.name.lower() == country_n.lower():
                 return country.alpha_3
@@ -36,9 +37,9 @@ class Overall:
         if country:
             return country_n.upper()
         else:
-            return None
+            return -1
 
-    def overall(code):
+    def overall(self):
         with open(args.data_base, 'r') as file:
             line = file.readline()[:-1].split('\t')
             header = line #створив на всякий випадок, якщо доведеться діставати індекси
@@ -50,15 +51,16 @@ class Overall:
                 line = file.readline()[:-1].split('\t')
                 if line == ['']:
                     break
-                if code != line[i_country] or line[i_medal] == 'NA':
+                if self.code != line[i_country] or line[i_medal] == 'NA':
                     continue
                 year = line[i_year]
                 if year in country_stats:
                     country_stats[year] += 1
                 else:
                     country_stats[year] = 1
+        if country_stats == {}:
+            return -1
         return sorted(country_stats.items(), key = lambda x: x[1], reverse = True)
-
 
 args.overall = tuple(args.overall)
 output_console(args.overall)

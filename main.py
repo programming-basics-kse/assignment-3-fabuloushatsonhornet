@@ -43,13 +43,13 @@ def overall(code):
                 country_stats[year] += 1
             else:
                 country_stats[year] = 1
-    return country_stats
+    return sorted(country_stats.items(), key = lambda x: x[1], reverse = True)
+
 
 
 countries_overall = {}
 args.overall = tuple(args.overall)
 for country in args.overall:
     country_code = get_country_code(country)
-    print(country_code)
-    print(overall(country_code))
+    print(f"{country_code} - {overall(country_code)[0][0]} : {overall(country_code)[0][1]} medals")
     # countries_overall[country_code] = {'year':None, 'count':0}

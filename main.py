@@ -1,21 +1,20 @@
 import argparse
 import csv
 
-# parser = argparse.ArgumentParser('Olympic data base')
-# # parser.add_argument('data_base', type=str, default='data_base_olympic.tsv')
-# parser.add_argument('medals', type=str)
-# parser.add_argument('country', type=str)
-# parser.add_argument('year', type=int)
+parser = argparse.ArgumentParser('Olympic data base')
+parser.add_argument('data_base', type=str, default='Olympic Athletes - athlete_events.tsv')
+parser.add_argument('-medals', type=str)
+parser.add_argument('country', type=str)
+parser.add_argument('year', type=str)
 # # parser.add_argument('-output', type=str, default='')
 # # parser.add_argument('-total', type=int)
 # # parser.add_argument('-overall', type=str)
 # # parser.add_argument('-interactive', type=bool, default=False)
-# args = parser.parse_args()
+args = parser.parse_args()
 #
 #
-# medals = args.medals
-# country = args.country
-# year = args.year
+country = args.country
+year = args.year
 
 # Temporary
 
@@ -38,7 +37,7 @@ def get_medal_and_country(value, year):
 
 def condition_checker(value):
     if len(value) == 0:
-        return f"There was not any olympic games in this year."
+        return f"There wasn`t any olympic games in this year."
     if len(value) < 10:
         return f"Ths country got less than 10 medals."
     else:
@@ -70,13 +69,10 @@ def print_result(data_list, country, year):
     else:
         print(condition_checker(data_list))
 
-year = '1998'
-country = 'USA'
 
 filtered_data_list = []
 get_list('Olympic Athletes - athlete_events.tsv', year)
 
 filtered_data_list = sorted(filtered_data_list, key=lambda x: int(x[0]), reverse=False)
-
 
 print_result(filtered_data_list, country, year)

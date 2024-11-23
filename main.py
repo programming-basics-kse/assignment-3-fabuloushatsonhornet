@@ -14,7 +14,6 @@ parser.add_argument('-overall', nargs='+', type=str)
 # parser.add_argument('-interactive', type=bool, default=False)
 args = parser.parse_args()
 
-
 def output_console(arg_country):
     for country in arg_country:
         country_o = Overall(country)
@@ -62,5 +61,11 @@ class Overall:
             return -1
         return sorted(country_stats.items(), key = lambda x: x[1], reverse = True)
 
-args.overall = tuple(args.overall)
-output_console(args.overall)
+print(args.__dict__)
+commads = {
+    'overall': output_console(tuple(args.overall))
+}
+
+for arg in args.__dict__:
+    if arg in commads:
+        commads[arg]

@@ -42,17 +42,14 @@ def get_list(filename, year):
     filtered_data_list = []
     with open(f"{filename}", 'r') as file:
         next_line = file.readline()
-        while next_line:
-            next_line = file.readline()
+        while next_line != '':
             data = next_line.split('\t')
-            try:
-                if get_medal_and_country(data, year):
-                    if total is False:
-                        filtered_data_list.append([data[0], data[1], data[6], data[7], data[8], data[9], data[13], data[14]])
-                    if total is True:
-                        filtered_data_list.append([data[6], data[14]])
-            except IndexError:
-                break
+            if get_medal_and_country(data, year):
+                if total is False:
+                    filtered_data_list.append([data[0], data[1], data[6], data[7], data[8], data[9], data[13], data[14]])
+                if total is True:
+                    filtered_data_list.append([data[6], data[14]])
+            next_line = file.readline()
     return filtered_data_list
 
 def print_with_total(data_list):

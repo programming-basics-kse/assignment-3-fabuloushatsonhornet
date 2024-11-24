@@ -11,10 +11,12 @@ parser.add_argument('data_base', type=str)
 # parser.add_argument('-output', type=str, default='')
 # parser.add_argument('-total', type=int)
 parser.add_argument('-overall', nargs='+', type=str)
-# parser.add_argument('-interactive', type=bool, default=False)
+parser.add_argument('-interactive', type=bool, default=False)
 args = parser.parse_args()
 
-def output_console(arg_country):
+def output_overall(arg_country):
+    if arg_country is None:
+        return
     for country in arg_country:
         country_o = Overall(country)
         if -1 == country_o.code:
@@ -63,13 +65,19 @@ class Overall:
 
 class InteractiveMode:
     def __init__(self):
+        commands_i = {
+            'medals': lambda: self.medals(),
+            'total': lambda: self.total(),
+            'overall': lambda: self.overall()
+        }
         command = input('Write a command (Exit - E/e)- ')
         while command.lower() not in ('e', 'exit'):
             self.validated = self.validation(command)
             if not self.validated:
                 command = input('Write a command correctly (Exit - E/e)- ')
                 continue
-
+            commands_i[self.validated]()
+            print('\n')
 
     def validation(self, com):
         lower_com = com.lower()
@@ -82,12 +90,14 @@ class InteractiveMode:
     def total(self):
         pass
     def overall(self):
-        pass
+        countries = input('Write countries with comma separated - ').split(',')
+        output_overall(tuple(countries))
 
+print(args.__dict__)
 commands = {
     'data_base': lambda: None,
-    'overall': lambda: output_console(tuple(args.overall)),
-    'interactive': InteractiveMode()
+    'overall': lambda: output_overall(args.overall),
+    'interactive': lambda: InteractiveMode()
 }
 for arg in args.__dict__:
     commands[arg]()

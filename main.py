@@ -61,9 +61,33 @@ class Overall:
             return -1
         return sorted(country_stats.items(), key = lambda x: x[1], reverse = True)
 
-commads = {
+class InteractiveMode:
+    def __init__(self):
+        command = input('Write a command (Exit - E/e)- ')
+        while command.lower() not in ('e', 'exit'):
+            self.validated = self.validation(command)
+            if not self.validated:
+                command = input('Write a command correctly (Exit - E/e)- ')
+                continue
+
+
+    def validation(self, com):
+        lower_com = com.lower()
+        if com not in commands:
+            return False
+        return lower_com
+
+    def medals(self):
+        pass
+    def total(self):
+        pass
+    def overall(self):
+        pass
+
+commands = {
     'data_base': lambda: None,
-    'overall': lambda: output_console(tuple(args.overall))
+    'overall': lambda: output_console(tuple(args.overall)),
+    'interactive': InteractiveMode()
 }
 for arg in args.__dict__:
-    commads[arg]()
+    commands[arg]()

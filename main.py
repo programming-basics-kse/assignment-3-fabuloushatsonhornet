@@ -16,7 +16,6 @@ if args.total == -1:
 else:
     total = True
     year = args.total
-year_country = args.medals
 
 def get_medal_and_country(value, year):
         try:
@@ -35,12 +34,12 @@ def get_medal_and_country(value, year):
 
 
 def condition_checker(value):
-    if len(value) == 0:
+    value_l = len(value)
+    if value_l == 0:
         return f"There wasn`t any olympic games in this year."
-    if len(value) < 10:
+    elif value_l < 10:
         return f"Ths country got less than 10 medals."
-    else:
-        return False
+    return False
 
 
 def get_list(filename, year):
@@ -79,7 +78,7 @@ def print_without_total(data_list):
         print(f"{index}. {name} - {discipline} - {medal}")
         index += 1
 
-def print_result(data_list, country ='', year=''):
+def print_result(data_list):
     if not condition_checker(data_list):
         if total is False:
             print_without_total(data_list)
@@ -91,7 +90,7 @@ def print_result(data_list, country ='', year=''):
 def main():
     if total is False:
         filtered_data_list = sorted(get_list(f"{data_base}", year), key=lambda x: int(x[0]), reverse=False)
-        print_result(filtered_data_list, country, year)
+        print_result(filtered_data_list)
     if total is True:
         filtered_data_list = get_list(f"{data_base}", year)
         print_result(filtered_data_list)

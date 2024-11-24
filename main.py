@@ -18,19 +18,15 @@ else:
     year = args.total
 
 def get_medal_and_country(value, year):
-        try:
             if total is False:
-                if (value[14].lower().capitalize().strip() == 'Gold' or value[14].lower().capitalize().strip() == 'Silver' or value[14].lower().capitalize().strip() == 'Bronze') and (value[9] == year) and ((value[6].lower() == country.lower()) or (value[7].lower() == country.lower())):
+                if value[14].lower().capitalize().strip() in ('Gold', 'Silver', 'Bronze') and all((value[9] == year, country.lower() in (value[6].lower(), value[7].lower()))):
                     value[14] = value[14][:-1]
                     return value
             if total is True:
-                if (value[14].lower().capitalize().strip() == 'Gold' or value[14].lower().capitalize().strip() == 'Silver' or value[14].lower().capitalize().strip() == 'Bronze') and (value[9] == year):
+                if value[14].lower().capitalize().strip() in ('Gold', 'Silver', 'Bronze') and (value[9] == year):
                     value[14] = value[14][:-1]
                     return value
             return False
-        except ValueError:
-            return False
-
 
 
 def condition_checker(value):

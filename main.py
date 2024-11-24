@@ -4,23 +4,23 @@ import csv
 parser = argparse.ArgumentParser('Olympic data base')
 parser.add_argument('data_base', type=str, default='Olympic Athletes - athlete_events.tsv')
 parser.add_argument('-medals', type=str)
-parser.add_argument('country', type=str)
-parser.add_argument('year', type=str)
 # # parser.add_argument('-output', type=str, default='')
-parser.add_argument('--total', type=int, default=False)
+parser.add_argument('-total', type=int, default=-1)
 # # parser.add_argument('-overall', type=str)
 # # parser.add_argument('-interactive', type=bool, default=False)
 args = parser.parse_args()
 #
 #
 data_base = args.data_base
-country = args.country
-if not args.total:
+# country = args.country
+'''if not args.total:
     year = args.total
     total = True
 else:
     year = args.year
-    total = False
+    total = False'''
+year = args.total # Тут просто с тотала достаеться сразу год, Дефолтом Я тебя запутал, теперь если тотала нету то по умолчанию стоит -1, это для проверки можно юзать
+# и аргумента со страной нету, это мой тупняк добавлять его, надо посмотреть откуда ты его должен доставать
 # Temporary
 
 def validation_number(value):

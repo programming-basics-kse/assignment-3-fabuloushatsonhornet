@@ -38,7 +38,7 @@ def condition_checker(value):
 
 def get_list(filename, year):
     filtered_data_list = []
-    with open(f"{filename}", 'r') as file:
+    with open(filename, 'r') as file:
         next_line = file.readline()
         while next_line != '':
             data = next_line.split('\t')
@@ -48,6 +48,8 @@ def get_list(filename, year):
                 if total is True:
                     filtered_data_list.append([data[6], data[14]])
             next_line = file.readline()
+    if total is False:
+        return sorted(filtered_data_list, key=lambda x: int(x[0]), reverse=False)
     return filtered_data_list
 
 def print_with_total(data_list):
@@ -79,10 +81,6 @@ def print_result(data_list):
         print(condition_checker(data_list))
 
 def main():
-    if total is False:
-        filtered_data_list = sorted(get_list(f"{data_base}", year), key=lambda x: int(x[0]), reverse=False)
-        print_result(filtered_data_list)
-    if total is True:
-        filtered_data_list = get_list(f"{data_base}", year)
-        print_result(filtered_data_list)
+    filtered_data_list = get_list(data_base, year)
+    print_result(filtered_data_list)
 main()

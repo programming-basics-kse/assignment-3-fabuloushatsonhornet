@@ -77,7 +77,7 @@ class InteractiveMode:
                 command = input('Write a command correctly (Exit - E/e)- ')
                 continue
             commands_i[self.validated]()
-            print('\n')
+            command = input('Write a command (Exit - E/e)- ')
 
     def validation(self, com):
         lower_com = com.lower()

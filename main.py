@@ -26,7 +26,6 @@ def get_medal_and_country(value, year):
     value[14] = value[14][:-1]
     return value
 
-
 def condition_checker(value):
     value_l = len(value)
     if value_l == 0:
@@ -34,7 +33,6 @@ def condition_checker(value):
     elif value_l < 10:
         return f"Ths country got less than 10 medals."
     return False
-
 
 def get_list(filename, year):
     filtered_data_list = []
@@ -83,4 +81,5 @@ def print_result(data_list):
 def main():
     filtered_data_list = get_list(data_base, year)
     print_result(filtered_data_list)
+
 main()

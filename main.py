@@ -61,13 +61,9 @@ class Overall:
             return -1
         return sorted(country_stats.items(), key = lambda x: x[1], reverse = True)
 
-print(args.__dict__)
 commads = {
-    'overall': output_console(tuple(args.overall))
+    'data_base': lambda: None,
+    'overall': lambda: output_console(tuple(args.overall))
 }
-
-# Як створити посилання на виконання функції в словник, щоб вона виконувалася тільки при звертанні за цим ключем
-
 for arg in args.__dict__:
-    if arg in commads:
-        commads[arg]
+    commads[arg]()

@@ -156,15 +156,18 @@ class InteractiveMode:
             # commands_i[self.validated]()
             with open(self.data_base, 'r') as file:
                 line = file.readline()[:-1].split('\t')
-                while line != '':
-                    line = file.readline()[:-1].split('\t')
+                self.first_game_l = [self.validated, 100000]
+                while line != ['']:
                     i_country = 7
                     i_year = 9
                     i_place = 11
-                    first_game = [self.validated, 100000]
-                    self.first_game(line, i_country, i_year, i_place, first_game)
+                    test = self.first_game(line, i_country, i_year, line[i_place], self.first_game_l[1])
+                    if test is not None:
+                        self.first_game_l = test
                     # self.best_game(line, i_country, i_year)
                     # self.worst_game(line, i_country, i_year)
+                    line = file.readline()[:-1].split('\t')
+                print(self.first_game_l)
 
             country_i = input('Write a country (Exit - E/e)- ')
 
@@ -175,8 +178,8 @@ class InteractiveMode:
         return lower_com
 
     def first_game(self, line, con, year, place, fir_game):
-        if line[con] == self.validated and line[year] < fir_game[1]:
-            fir_game[0:2] = place, year
+        if line[con] == self.validated and year < fir_game:
+            return place, year
     def best_game(self, line, con, year):
         pass
     def worst_game(self, line, con, year):

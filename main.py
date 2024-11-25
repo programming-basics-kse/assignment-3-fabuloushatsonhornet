@@ -10,16 +10,19 @@ parser.add_argument('-overall', nargs='+', type=str)
 parser.add_argument('-interactive', type=bool, default=False)
 args = parser.parse_args()
 data_base = args.data_base
+counter_main = [0]
 
 def output(valid):
     if valid:
         pass
 
 def main():
-    object = OlympicDataBase(args.medals, args.total)
-    if args.total != -1 and args.medals is not None:
-        filtered_data_list = object.get_list()
-        object.print_result(filtered_data_list)
+    if counter_main[0] == 0:
+        object = OlympicDataBase(args.medals, args.total)
+        if args.total != -1 or args.medals is not None:
+            filtered_data_list = object.get_list()
+            object.print_result(filtered_data_list)
+    counter_main[0] += 1
 
 class OlympicDataBase:
     def __init__(self, medals=None, total=-1):
@@ -146,6 +149,8 @@ class Overall:
 
 class InteractiveMode:
     def __init__(self):
+        if not args.interactive:
+            return
         self.data_base = data_base
         country_i = input('Write a country (Exit - E/e)- ')
         while country_i.lower() not in ('e', 'exit'):

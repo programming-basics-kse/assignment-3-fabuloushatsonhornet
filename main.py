@@ -4,12 +4,16 @@ import pycountry
 parser = argparse.ArgumentParser('Olympic data base')
 parser.add_argument('data_base', type=str, default='data_base_olympic.tsv')
 parser.add_argument('-medals', type=str, nargs='+')
-# parser.add_argument('-output', type=str, default='')
+parser.add_argument('-output', type=str, default=False)
 parser.add_argument('-total', type=str, default=-1)
 parser.add_argument('-overall', nargs='+', type=str)
 parser.add_argument('-interactive', type=bool, default=False)
 args = parser.parse_args()
 data_base = args.data_base
+
+def output(valid):
+    if valid:
+        pass
 
 def main():
     object = OlympicDataBase(args.medals, args.total)
@@ -142,14 +146,10 @@ class Overall:
 
 class InteractiveMode:
     def __init__(self):
-        # commands_i = {
-        #     'medals': lambda: self.medals(),
-        #     'total': lambda: self.total(),
-        #     'overall': lambda: self.overall()
-        # }
+        self.data_base = data_base
         country_i = input('Write a country (Exit - E/e)- ')
         while country_i.lower() not in ('e', 'exit'):
-            self.validated = Overall.get_country_code(country_i)
+            self.validated = self.validation_country(country_i)
             if self.validated == -1:
                 country_i = input('Write a contry correctly (Exit - E/e)- ')
                 continue
@@ -182,13 +182,24 @@ class InteractiveMode:
     def worst_game(self, line, con, year):
         pass
 
+    def validation_country(self, country_n):
+        for country in pycountry.countries:
+            if country.name.lower() == country_n.lower():
+                return country.alpha_3
+        country = pycountry.countries.get(alpha_3=country_n)
+        if country:
+            return country_n.upper()
+        else:
+            return -1
+
 print(args.__dict__)
 commands = {
     'data_base': lambda: None,
     'medals': lambda: main(),
     'total': lambda: main(),
     'overall': lambda: output_overall(args.overall),
-    'interactive': lambda: InteractiveMode()
+    'interactive': lambda: InteractiveMode(),
+    'output': lambda: output(args.output)
 }
 for arg in args.__dict__:
     commands[arg]()

@@ -1,11 +1,7 @@
 import argparse
-import csv
 import pycountry
-from pycountry import countries
-from pyparsing import empty
 
 parser = argparse.ArgumentParser('Olympic data base')
-# parser.add_argument('input file', default='main.py')
 parser.add_argument('data_base', type=str)
 # parser.add_argument('-medals', type=str)
 # parser.add_argument('-output', type=str, default='')

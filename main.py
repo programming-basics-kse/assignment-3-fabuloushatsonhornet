@@ -13,8 +13,12 @@ data_base = args.data_base
 counter_main = [0]
 
 def output(valid):
-    if valid:
-        pass
+    value = ''
+    inter = InteractiveMode()
+    value += inter.output_
+    if valid is not None:
+        with open(valid, 'a') as f:
+            f.write(value + '\n')
 
 def main():
     if counter_main[0] == 0:
@@ -196,11 +200,13 @@ class InteractiveMode:
                     average_silver += year_m[1]['gold']
                     average_bronze += year_m[1]['bronze']
                 self.average_game_l = {'gold': average_gold / dict_len, 'silver': average_silver / dict_len, 'bronze': average_bronze / dict_len}
-                print(self.first_game_l)
-                print(self.best_game_l)
-                print(self.worst_game_l)
-                print(self.average_game_l)
-
+                self.output_ = ''
+                self.output_ += f"City:{self.first_game_l[0]} year:{self.first_game_l[1]}\n"
+                self.output_ += f"Best year medals: {self.best_game_l[1]}\n"
+                self.output_ += f"Worst year medals: {self.worst_game_l[1]}\n"
+                self.output_ += f"Average year medals, gold: {self.average_game_l['gold']}; silver: {self.average_game_l['silver']}; bronze: {self.average_game_l['bronze']}"
+                print(self.output_)
+                output(args.output)
             country_i = input('Write a country (Exit - E/e)- ')
 
     def validation(self, com):
@@ -246,7 +252,7 @@ commands = {
     'total': lambda: main(),
     'overall': lambda: output_overall(args.overall),
     'interactive': lambda: InteractiveMode(),
-    'output': lambda: output(args.output)
+    'output': lambda: None
 }
 for arg in args.__dict__:
     commands[arg]()

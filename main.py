@@ -10,16 +10,21 @@ parser.add_argument('-overall', nargs='+', type=str)
 parser.add_argument('-interactive', type=bool, default=False)
 args = parser.parse_args()
 data_base = args.data_base
-# -----
-import argparse
+
+def main():
+    object = OlympicDataBase(args.medals, args.total)
+    if args.total != -1 and args.medals is not None:
+        filtered_data_list = object.get_list()
+        object.print_result(filtered_data_list)
+
 class OlympicDataBase:
-    def __init__(self, data_base, medals=None, total=-1):
+    def __init__(self, medals=None, total=-1):
         self.data_base = data_base
         if total != -1:
             self.total = True
             self.year = total
             self.country = None
-        else:
+        elif medals is not None:
             self.total = False
             self.year = medals[1]
             self.country = medals[0]
@@ -86,12 +91,6 @@ class OlympicDataBase:
         else:
             print(condition)
 
-    def main(self):
-        filtered_data_list = self.get_list()
-        self.print_result(filtered_data_list)
-
-
-# ------
 def output_overall(arg_country):
     if arg_country is None:
         return
@@ -155,6 +154,17 @@ class InteractiveMode:
                 country_i = input('Write a contry correctly (Exit - E/e)- ')
                 continue
             # commands_i[self.validated]()
+            with open(self.data_base, 'r') as file:
+                line = file.readline()[:-1].split('\t')
+                while line != '':
+                    line = file.readline()[:-1].split('\t')
+                    i_country = 7
+                    i_year = 9
+                    i_place = 11
+                    first_game = [self.validated, 100000]
+                    self.first_game(line, i_country, i_year, i_place, first_game)
+                    # self.best_game(line, i_country, i_year)
+                    # self.worst_game(line, i_country, i_year)
 
             country_i = input('Write a country (Exit - E/e)- ')
 
@@ -164,13 +174,13 @@ class InteractiveMode:
             return False
         return lower_com
 
-    def first_game(self):
+    def first_game(self, line, con, year, place, fir_game):
+        if line[con] == self.validated and line[year] < fir_game[1]:
+            fir_game[0:2] = place, year
+    def best_game(self, line, con, year):
         pass
-    def best_game(self):
+    def worst_game(self, line, con, year):
         pass
-    def worst_game(self):
-        countries = input('Write countries with comma separated - ').split(',')
-        output_overall(tuple(countries))
 
 print(args.__dict__)
 commands = {

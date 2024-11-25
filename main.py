@@ -159,6 +159,8 @@ class InteractiveMode:
                 line = file.readline()[:-1].split('\t')
                 self.first_game_l = [self.validated, 100000]
                 self.best_game_l = {}
+                self.average_game_d = {}
+
                 while line != ['']:
                     i_country = 7
                     i_year = 9
@@ -173,14 +175,26 @@ class InteractiveMode:
                     test = self.first_game(COUNTRY, YEAR, PLACE, self.first_game_l[1])
                     if test is not None:
                         self.first_game_l = test
-
                     self.best_game(COUNTRY, MEDAL, YEAR, self.best_game_l)
+                    self.average_game(COUNTRY, MEDAL, YEAR, self.average_game_d)
 
-                    # self.worst_game(line, i_country, i_year)
+
                     line = file.readline()[:-1].split('\t')
+                self.worst_game_l = sorted(self.best_game_l.items(), key=lambda x: x[1], reverse=False)[0]
                 self.best_game_l = sorted(self.best_game_l.items(), key=lambda x: x[1], reverse=True)[0]
+                average_gold = 0
+                average_silver = 0
+                average_bronze = 0
+                dict_len = len(self.average_game_d)
+                for year_m in self.average_game_d.items():
+                    average_gold += year_m[1]['gold']
+                    average_silver += year_m[1]['gold']
+                    average_bronze += year_m[1]['bronze']
+                self.average_game_l = {'gold': average_gold / dict_len, 'silver': average_silver / dict_len, 'bronze': average_bronze / dict_len}
                 print(self.first_game_l)
                 print(self.best_game_l)
+                print(self.worst_game_l)
+                print(self.average_game_l)
 
             country_i = input('Write a country (Exit - E/e)- ')
 
@@ -193,17 +207,22 @@ class InteractiveMode:
     def first_game(self, con, year, place, fir_game):
         if con == self.validated and year < fir_game:
             return place, year
-    def best_game(self, con, medal, year, dict):
+    def best_game(self, con, medal, year, dict_):
         if con != self.validated or medal == 'NA':
             return
-        if year in dict:
-            dict[year] += 1
+        if year in dict_:
+            dict_[year] += 1
         else:
-            dict[year] = 1
-        if dict == {}:
+            dict_[year] = 1
+        if dict_ == {}:
             return
-    def worst_game(self, line, con, year):
-        pass
+    def average_game(self, con, medal, year, dict_):
+        if con != self.validated:
+            return
+        if year not in dict_:
+            dict_[year] = {'gold': 0, 'silver': 0, 'bronze': 0}
+        if len(medal) > 3:
+            dict_[year][medal.lower()] += 1
 
     def validation_country(self, country_n):
         for country in pycountry.countries:

@@ -4,12 +4,13 @@ import pycountry
 parser = argparse.ArgumentParser('Olympic data base')
 parser.add_argument('data_base', type=str, default='data_base_olympic.tsv')
 parser.add_argument('-medals', type=str, nargs='+')
-parser.add_argument('-output', type=str, default='')
+# parser.add_argument('-output', type=str, default='')
 parser.add_argument('-total', type=str, default=-1)
 parser.add_argument('-overall', nargs='+', type=str)
 parser.add_argument('-interactive', type=bool, default=False)
 args = parser.parse_args()
 data_base = args.data_base
+
 if args.total == -1:
     total = False
     year = args.medals[1]
@@ -83,7 +84,7 @@ def main():
     filtered_data_list = get_list(data_base, year)
     print_result(filtered_data_list)
 
-main()
+
 def output_overall(arg_country):
     if arg_country is None:
         return
@@ -135,19 +136,20 @@ class Overall:
 
 class InteractiveMode:
     def __init__(self):
-        commands_i = {
-            'medals': lambda: self.medals(),
-            'total': lambda: self.total(),
-            'overall': lambda: self.overall()
-        }
-        command = input('Write a command (Exit - E/e)- ')
-        while command.lower() not in ('e', 'exit'):
-            self.validated = self.validation(command)
-            if not self.validated:
-                command = input('Write a command correctly (Exit - E/e)- ')
+        # commands_i = {
+        #     'medals': lambda: self.medals(),
+        #     'total': lambda: self.total(),
+        #     'overall': lambda: self.overall()
+        # }
+        country_i = input('Write a country (Exit - E/e)- ')
+        while country_i.lower() not in ('e', 'exit'):
+            self.validated = Overall.get_country_code(country_i)
+            if self.validated == -1:
+                country_i = input('Write a contry correctly (Exit - E/e)- ')
                 continue
-            commands_i[self.validated]()
-            command = input('Write a command (Exit - E/e)- ')
+            # commands_i[self.validated]()
+
+            country_i = input('Write a country (Exit - E/e)- ')
 
     def validation(self, com):
         lower_com = com.lower()
@@ -155,17 +157,19 @@ class InteractiveMode:
             return False
         return lower_com
 
-    def medals(self):
+    def first_game(self):
         pass
-    def total(self):
+    def best_game(self):
         pass
-    def overall(self):
+    def worst_game(self):
         countries = input('Write countries with comma separated - ').split(',')
         output_overall(tuple(countries))
 
 print(args.__dict__)
 commands = {
     'data_base': lambda: None,
+    'medals': lambda: main(),
+    'total': lambda: main(),
     'overall': lambda: output_overall(args.overall),
     'interactive': lambda: InteractiveMode()
 }

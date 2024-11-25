@@ -155,19 +155,32 @@ class InteractiveMode:
                 continue
             # commands_i[self.validated]()
             with open(self.data_base, 'r') as file:
+                file.readline()
                 line = file.readline()[:-1].split('\t')
                 self.first_game_l = [self.validated, 100000]
+                self.best_game_l = {}
                 while line != ['']:
                     i_country = 7
                     i_year = 9
                     i_place = 11
-                    test = self.first_game(line, i_country, i_year, line[i_place], self.first_game_l[1])
+                    i_medal = -1
+
+                    COUNTRY = line[i_country]
+                    YEAR = int(line[i_year])
+                    PLACE = line[i_place]
+                    MEDAL = line[i_medal]
+
+                    test = self.first_game(COUNTRY, YEAR, PLACE, self.first_game_l[1])
                     if test is not None:
                         self.first_game_l = test
-                    # self.best_game(line, i_country, i_year)
+
+                    self.best_game(COUNTRY, MEDAL, YEAR, self.best_game_l)
+
                     # self.worst_game(line, i_country, i_year)
                     line = file.readline()[:-1].split('\t')
+                self.best_game_l = sorted(self.best_game_l.items(), key=lambda x: x[1], reverse=True)[0]
                 print(self.first_game_l)
+                print(self.best_game_l)
 
             country_i = input('Write a country (Exit - E/e)- ')
 
@@ -177,11 +190,18 @@ class InteractiveMode:
             return False
         return lower_com
 
-    def first_game(self, line, con, year, place, fir_game):
-        if line[con] == self.validated and year < fir_game:
+    def first_game(self, con, year, place, fir_game):
+        if con == self.validated and year < fir_game:
             return place, year
-    def best_game(self, line, con, year):
-        pass
+    def best_game(self, con, medal, year, dict):
+        if con != self.validated or medal == 'NA':
+            return
+        if year in dict:
+            dict[year] += 1
+        else:
+            dict[year] = 1
+        if dict == {}:
+            return
     def worst_game(self, line, con, year):
         pass
 

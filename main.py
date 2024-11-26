@@ -4,21 +4,19 @@ import pycountry
 parser = argparse.ArgumentParser('Olympic data base')
 parser.add_argument('data_base', type=str, default='data_base_olympic.tsv')
 parser.add_argument('-medals', type=str, nargs='+')
-parser.add_argument('-output', type=str, default=False)
+parser.add_argument('-output', type=str, default=None)
 parser.add_argument('-total', type=str, default=-1)
 parser.add_argument('-overall', nargs='+', type=str)
-parser.add_argument('-interactive', type=bool, default=False)
+parser.add_argument('-interactive', type=str, default=False)
 args = parser.parse_args()
 data_base = args.data_base
 counter_main = [0]
 
-def output(valid):
-    value = ''
-    inter = InteractiveMode()
-    value += inter.output_
+def output(valid, out):
+    print(out)
     if valid is not None:
         with open(valid, 'a') as f:
-            f.write(value + '\n')
+            f.write(out + '\n\n')
 
 def main():
     if counter_main[0] == 0:
@@ -80,17 +78,18 @@ class OlympicDataBase:
                 data_dict[country] = {'gold': 0, 'silver': 0, 'bronze': 0}
             data_dict[country][medal.lower()] += 1
         for country, medal in data_dict.items():
-            print(f"{country} - gold:{medal['gold']} - silver:{medal['silver']} - bronze:{medal['bronze']}")
+            output(args.output, f"{country} - gold:{medal['gold']} - silver:{medal['silver']} - bronze:{medal['bronze']}")
 
     def print_without_total(self, data_list):
         index = 1
-        print(f"Data for {self.year} olympic games. Team:{self.country}.")
+        output_ = f"Data for {self.year} olympic games. Team:{self.country}.\n"
         for data in data_list:
             name = data[1]
             discipline = data[6]
             medal = data[7]
-            print(f"{index}. {name} - {discipline} - {medal}")
+            output_ += f"{index}. {name} - {discipline} - {medal}\n"
             index += 1
+        output(args.output, output_)
 
     def print_result(self, data_list):
         condition = self.condition_checker(data_list)
@@ -100,16 +99,18 @@ class OlympicDataBase:
             else:
                 self.print_with_total(data_list)
         else:
-            print(condition)
+            output(args.output, condition)
 
 def output_overall(arg_country):
+    output_ = ''
     if arg_country is None:
         return
     for country in arg_country:
         country_o = Overall(country)
         if -1 == country_o.code:
             continue
-        print(f"{country_o.code} - {country_o.top_y} : {country_o.top_m} medals")
+        output_ += f"{country_o.code} - {country_o.top_y} : {country_o.top_m} medals\n"
+    output(args.output, output_)
 
 class Overall:
     def __init__(self, country):
@@ -205,8 +206,7 @@ class InteractiveMode:
                 self.output_ += f"Best year medals: {self.best_game_l[1]}\n"
                 self.output_ += f"Worst year medals: {self.worst_game_l[1]}\n"
                 self.output_ += f"Average year medals, gold: {self.average_game_l['gold']}; silver: {self.average_game_l['silver']}; bronze: {self.average_game_l['bronze']}"
-                print(self.output_)
-                output(args.output)
+                output(args.output, self.output_)
             country_i = input('Write a country (Exit - E/e)- ')
 
     def validation(self, com):
